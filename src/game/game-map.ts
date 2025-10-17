@@ -357,6 +357,7 @@ export class GameMap {
     const postDrawDrawables: Drawable[] = [];
     let drawHighlight = false;
     for (let row = minRow; row <= maxRow; row++) {
+      const rowObjects: Drawable[] = [];
       for (let col = minCol; col <= maxCol; col++) {
         const cell = this.grid[row][col];
         const x = cell.x * CELL_WIDTH;
@@ -379,7 +380,9 @@ export class GameMap {
           drawHighlight = true;
         }
 
-        cell?.content?.draw();
+        if (cell.content?.draw) {
+          rowObjects.push(cell.content);
+        }
         if (cell?.content?.postDraw) {
           postDrawDrawables.push(cell?.content);
         }
@@ -387,6 +390,12 @@ export class GameMap {
         // drawEngine.ctx1.strokeStyle = 'red';
         // drawEngine.ctx1.strokeRect(x, y, CELL_WIDTH, CELL_HEIGHT);
       }
+      rowObjects.sort((a, b) => (
+        a.type === 'field' ? -1
+        : b.type === 'field' ? 1
+        : 0
+      ));
+      rowObjects.forEach(drawable => drawable.draw());
     }
 
     // Third pass: postDraw
