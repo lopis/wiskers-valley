@@ -49,8 +49,8 @@ export class GameMap {
         }
         
         const tree = new Tree(
-          x * CELL_WIDTH - (16 - CELL_WIDTH) / 2, // Adjust x to center the image
-          y * CELL_HEIGHT - (16 - CELL_HEIGHT) / 2, // Adjust y to center the image
+          x * CELL_WIDTH, // Adjust x to center the image
+          y * CELL_HEIGHT, // Adjust y to center the image
           treeType
         );
         return { x, y, content: tree };
@@ -383,6 +383,9 @@ export class GameMap {
         if (cell?.content?.postDraw) {
           postDrawDrawables.push(cell?.content);
         }
+
+        // drawEngine.ctx1.strokeStyle = 'red';
+        // drawEngine.ctx1.strokeRect(x, y, CELL_WIDTH, CELL_HEIGHT);
       }
     }
 
