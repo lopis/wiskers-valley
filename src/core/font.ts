@@ -1,7 +1,9 @@
 import { hexToRgb, colors } from '@/core/util/color';
 import { createCanvasWithCtx } from '@/core/util/canvas';
 
-export const tinyFont = /* font-start */'6v7ic,6trd0,6to3o,6nvic,55eyo,2np50,2jcjo,3ugt8,34ao,7k,glc,1,opzc,3xdeu,3sapz,8rhfz,8ri26,1bzky,9j1ny,3ws2u,9dv9k,3xb1i,3xbmu,2t8g,2t8s,26ndv,ajmo,fl5ug,3x7nm,n75t,54br,59u0e,53if,rlev,4jrb,1yjk4,4eav,55q95,18zsz,mi3r,574tl,1aedd,ljn9,a1bd,4f1i,a1fs,549t,53ig,5832,1dwsh,6iw6,6ix0,cbsa,6gix,6fk4,aky7,7mbws,cvtyq,deehh,2sfi3'/* font-end */.split(',');
+export const tinyFont = /* font-start */'56bayo0,55r0jcw,55qdpmo,53h80e8,g14jg1s,8555vkg,fwr99nk,,,tc,,w,118f6sg,c4bz6zc,89ig20o,879adko,nqns0ts,g1ax4aw,rviq6nk,857ohlc,roorw9c,87alfyo,87eauc0,,,1srlvq,,dkz5m8,879abyo,g19m1wg,7xe42k,g7xz6m0,7wra58,26yi61o,6thu6w,42kog7k,7xdd7c,g7xz6lg,fsdz38g,3y3hte8,g1awgmc,g19m3gw,em2m5m,fp2qsk,6tfqjc,fp4hsw,7xdd6s,bb4b34,7wqji0,8bqct1k,a5av4o,a5avbk,9l09sk,a59t7o,a5a494,gnyu64,6pp15k,b9utgk,bs11re,65owmfq'/* font-end */.split(',');
+
+const characterSize = 6;
 
 // Character cache: charCode-color-size -> Canvas
 const characterCanvases: { [key: string]: HTMLCanvasElement } = {};
@@ -29,16 +31,20 @@ export type DrawTextProps = {
 }
 
 const getCharacterData = (letter: string) => {
-  if (letter === '0') return { paddedBinary: '0'.repeat(25), leftmostCol: 0, charWidth: 5 };
+  if (letter === '0') return {
+    paddedBinary: '0'.repeat(characterSize*characterSize),
+    leftmostCol: 0,
+    charWidth: characterSize,
+  };
   
-  const paddedBinary = String(parseInt(letter, 36).toString(2)).padStart(25, '0');
-  let leftmostCol = 5;
+  const paddedBinary = String(parseInt(letter, 36).toString(2)).padStart(characterSize*characterSize, '0');
+  let leftmostCol = characterSize;
   let rightmostCol = -1;
   
   // Find leftmost and rightmost columns with set bits
-  for (let col = 0; col < 5; col++) {
-    for (let row = 0; row < 5; row++) {
-      const bitIndex = row * 5 + col;
+  for (let col = 0; col < characterSize; col++) {
+    for (let row = 0; row < characterSize; row++) {
+      const bitIndex = row * characterSize + col;
       if (paddedBinary[bitIndex] === '1') {
         leftmostCol = Math.min(leftmostCol, col);
         rightmostCol = Math.max(rightmostCol, col);
@@ -59,7 +65,7 @@ const createCharacterCanvas = (character: string, size: number, color: string): 
   const { paddedBinary, leftmostCol, charWidth } = getCharacterData(letter);
   
   const scaledWidth = charWidth * size;
-  const letterHeight = 5 * size;
+  const letterHeight = characterSize * size;
   
   const [canvas, ctx] = createCanvasWithCtx(scaledWidth, letterHeight);
   
@@ -69,8 +75,8 @@ const createCharacterCanvas = (character: string, size: number, color: string): 
   // Draw character bitmap
   paddedBinary.split('').forEach((bit, bitIndex) => {
     if (bit !== '0') {
-      const col = bitIndex % 5;
-      const row = Math.floor(bitIndex / 5);
+      const col = bitIndex % characterSize;
+      const row = Math.floor(bitIndex / characterSize);
       
       // Skip empty left columns
       if (col < leftmostCol) return;
@@ -126,7 +132,7 @@ export const drawText = (
     totalWidth += charWidth + (i < characters.length - 1 ? spacing : 0);
   });
   
-  const letterHeight = 5 * size;
+  const letterHeight = characterSize * size;
   const offsetX = textAlign === 0 ? 0 : textAlign === 1 ? Math.round(totalWidth / 2) : totalWidth;
   const offsetY = textBaseline === 0 ? 0 : textBaseline === 1 ? Math.round(letterHeight / 2) : letterHeight;
   
