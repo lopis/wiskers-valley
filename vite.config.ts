@@ -55,7 +55,7 @@ export default defineConfig(({ command, mode }) => {
       typescriptPlugin(),
       // roadrollerPlugin(),
       workletPlugin(),
-      // ectPlugin(),
+      ectPlugin(),
       // visualizer({
       //   filename: 'dist/stats.html',
       //   open: false,

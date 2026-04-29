@@ -17,7 +17,6 @@
 
 - Bugs
 
-
 - Post comp learning
   - Read up on Run-length encoding, and whether it can help me: https://en.wikipedia.org/wiki/Run-length_encoding
   - https://github.com/js13kGames/witchcat/blob/main/src/js/02-const.js
